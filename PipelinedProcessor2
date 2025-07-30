@@ -1,0 +1,33 @@
+TEST BENCH:
+`timescale 1ns/1ps
+module tb_pipeline_processor;
+
+    reg clk, reset;
+    wire [7:0] result;
+
+    // Instantiate the processor
+    pipeline_processor uut (
+        .clk(clk),
+        .reset(reset),
+        .result(result)
+    );
+
+    // Clock generation
+    initial clk = 0;
+    always #5 clk = ~clk; // 10 ns period
+
+    initial begin
+        $dumpfile("dump.vcd");
+        $dumpvars(0, tb_pipeline_processor);
+
+        $monitor("Time=%0t | Result=%0d", $time, result);
+
+        reset = 1;
+        #10;
+        reset = 0;
+
+        // Run simulation for some cycles
+        #100;
+        $finish;
+    end
+endmodule
